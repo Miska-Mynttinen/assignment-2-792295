@@ -30,6 +30,25 @@ class ClientBatchIngestApp {
         mysimbdpCoredms.ingest(this.data); // placeholder
     }
 
+    testIngestionPerformance(tenantId, data, constraints) {
+        const startTime = Date.now();
+      
+        // Ingest the data
+        ingestData(tenantId, data, constraints)
+          .then(() => {
+            const endTime = Date.now();
+            const duration = endTime - startTime; // in milliseconds
+            const dataSize = data.length; // in bytes
+            const speed = dataSize / duration; // in bytes per millisecond
+      
+            console.log(`Ingestion speed for tenant ${tenantId}: ${speed} bytes/ms`);
+          })
+          .catch(error => {
+            console.error(`Ingestion failed for tenant ${tenantId}: ${error.message}`);
+          });
+      }
+      
+
     run() {
         this.readFiles();
         this.wrangleData();
@@ -38,5 +57,10 @@ class ClientBatchIngestApp {
 }
 
 // Usage
-const app = new ClientBatchIngestApp('/path/to/client-staging-input-directory');
+/*const app = new ClientBatchIngestApp('/path/to/client-staging-input-directory');
 app.run();
+
+const tenant1Data = /* ...
+const tenant1Constraints = /* ...
+testIngestionPerformance('tenant1', tenant1Data, tenant1Constraints);
+*/
