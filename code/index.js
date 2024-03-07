@@ -4,9 +4,14 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http')
-const dataRouter = require('./dataRouter.js');
+const dataRouter = require('./assignment_1_code_used/dataRouter.js');
+const tenantRouter = require('./database_api/tenantRouter.js');
+const { createAgreement } = require('./database_api/tenantRouter.js');
 require('express-async-errors');
 require('dotenv').config()
+const serviceAgreements = require('./service_contracts.json')
+const MySimBDPBatchIngestManager = require('./batchingestmanager.js')
+const ClientStagingInputDirectory = require('./client-staging-input-directory.js')
 
 
 const PORT = 3000;
@@ -31,9 +36,17 @@ mongoose.connect(`mongodb://root:password@mongo:27017/`)
 
 // Route
 mysimbdp.use('/data', dataRouter);
+mysimbdp.use('/tenant', tenantRouter);
 
 const server = http.createServer(mysimbdp)
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+serviceAgreements.forEach((agreement) => createAgreement(agreement));
+
+const manager = new MySimBDPBatchIngestManager();
+const inputDirectory = new ClientStagingInputDirectory(manager);
+
+module.exports = { inputDirectory };

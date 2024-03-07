@@ -3,10 +3,12 @@
 # Part 1
 
 ## 1. Schemas for a set of constraints for tenant service agreement:
-### tentant1_schema_constraints:
+Tenant 1 has a massive amount IoT sensors sending data periodically so they get a better price for the greater amount. (payment group 1)
+### tenant1_schema_constraints:
 ```json
 {
-    "tenant_id": "1",
+    "tenantId": "1",
+    "paymentGroup": "1",
     "data_file_constraints": {
         "file_format": "JSON",
         "max_num_of_files": 10,
@@ -20,18 +22,20 @@
 }
 ```
 
-### tentant2_schema_constraints:
+Tenant 2 sends less IoT sensor data inconsistently so they have more restrictions and more expensive service costs. (payment group 2)
+### tenant2_schema_constraints:
 ```json
 {
-    "tenant_id": "2",
+    "tenantId": "2",
+    "paymentGroup": "2",
     "data_file_constraints": {
         "file_format": "JSON",
-        "max_num_of_files": 10,
-        "max_file_size": "10MB"
+        "max_num_of_files": 5,
+        "max_file_size": "5MB"
     },
     "service_agreement_constraints": {
         "agreement_duration_months": 6,
-        "cost_per_MB_in_euro": 0.01,
+        "cost_per_MB_in_euro": 0.02,
         "service_availability_in_percent": 95
     }
 }
@@ -58,7 +62,10 @@
 
 
 
+
 ## 4. Multi-tenancy model in mysimbdp:
+The client first puts files to the input-directory withing the core application of the platform and the input directory calls the manager and the manager calls the clients ingestion app that calls the input-directory for the files
+
 #### Shared:
 - Mysimbdp-coredms shared between all tenants.
 - Mysimbdp-batchingestmanager is used to manage all tenants mysimbdp-clientbatchingestingapp.

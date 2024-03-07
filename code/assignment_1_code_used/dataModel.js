@@ -27,7 +27,7 @@ const dataSchema = new mongoose.Schema({
       value: String,
       value_type: String
     }]
-  });
+});
 
 dataSchema.set('toJSON', {
   transform: (document, returnedObject) => {
