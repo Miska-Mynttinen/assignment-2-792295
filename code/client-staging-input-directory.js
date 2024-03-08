@@ -1,3 +1,5 @@
+// const { getAgreements } = require('./database_api/tenantRouter.js');
+
 class ClientStagingInputDirectory {
     constructor(MySimBDPBatchIngestManager) {
         this.manager = MySimBDPBatchIngestManager;
@@ -5,7 +7,9 @@ class ClientStagingInputDirectory {
     }
 
     putFilesIntoInputDirectory = (insertedFiles, tenantId) => {
-        const dataId = generateRandomStringId();
+        /* Add check here that fails if the tenant agreement is not followed. Most optimal place to stop before using computing resources. */
+        // const tenantAgreements = getAgreements();
+        const dataId = this.generateRandomStringId();
         this.files.push([insertedFiles, tenantId, dataId])
         this.manager.notifyManager(tenantId, dataId);
     }
@@ -27,4 +31,4 @@ class ClientStagingInputDirectory {
 
 }
 
-module.exports = { ClientStagingInputDirectory };
+module.exports = ClientStagingInputDirectory;

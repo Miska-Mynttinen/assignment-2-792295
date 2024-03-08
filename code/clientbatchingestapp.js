@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const { inputDirectory } = require('./index.js')
 const { ingestData } = require('./mysimbdp-daas.js')
 
-const readFiles = (tenantId, dataId) => {
+const readFiles = (tenantId, dataId, inputDirectory) => {
     // Read data from JSON file as an example
     const data = inputDirectory.giveDataToTenant(tenantId, dataId);
     // this.data = JSON.parse(fileContent);
@@ -43,8 +42,8 @@ const testIngestionPerformance = (tenantId, data, constraints) => {
 }
 
 
-const clientbatchingest = (tenantId, dataId) => {
-    const data = readFiles(tenantId, dataId);
+const clientbatchingest = (tenantId, dataId, inputDirectory) => {
+    const data = readFiles(tenantId, dataId, inputDirectory);
     const wrangledData = wrangleData(tenantId, data);
     ingestData(tenantId, wrangledData);
 }

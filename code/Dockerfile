@@ -1,3 +1,5 @@
+# Created in assignment 1
+
 # Node js image
 FROM node:latest
 

@@ -1,7 +1,8 @@
 require('axios');
-const { getAll, getOne } = require('../dataService.js');
-const produce = require('../kafka_producer.js');
-const consume = require('../kafka_consumer.js');
+const { getAll, getOne } = require('./assignment_1_code_used/dataService.js');
+// const { getAll, getOne } = require('./database_api/tenantService.js');
+const produce = require('./assignment_1_code_used/kafka_producer.js');
+const consume = require('./assignment_1_code_used/kafka_consumer.js');
 
 const ingestData = async (tenantId, data) => {
     // Produce data to Kafka topic

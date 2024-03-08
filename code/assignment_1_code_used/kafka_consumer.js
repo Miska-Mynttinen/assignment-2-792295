@@ -1,6 +1,7 @@
 require('axios');
 const { Kafka } = require('kafkajs');
-const { create } = require('./dataService');
+// const { create } = require('./dataService');
+const { create } = require('../database_api/tenantService');
 
 
 const kafka = new Kafka({

@@ -1,12 +1,20 @@
-const schedule = require('node-schedule');
 const { clientbatchingest } = require('./clientbatchingestapp.js')
-const { getAgreements } = require('./database_api/tenantRouter.js');
+const { getAgreements } = require('./database_api/tenantService.js');
 
 class MySimBDPBatchIngestManager {
     constructor() {
+        this._inputDirectory = null;
         this.scheduleArray = [];
         this.scheduleJobsRunning = false;
         this.tenantAgreements = getAgreements();
+    }
+
+    set inputDirectory(inputDirectory) {
+        this._inputDirectory = inputDirectory;
+    }
+
+    get inputDirectory() {
+        return this._inputDirectory;
     }
 
     notifyManager = (tenantId, dataId) => {
@@ -23,7 +31,7 @@ class MySimBDPBatchIngestManager {
 
     callClientIngestionApp = (tenantId, dataId) => {
         // An API call to the specifix tenants clientbatchingestionapp which is a black box.
-        clientbatchingest(tenantId, dataId)
+        clientbatchingest(tenantId, dataId, this._inputDirectory);
     }
     
     scheduleJobs = () => {

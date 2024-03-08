@@ -3,7 +3,8 @@
 # Part 1
 
 ## 1. Schemas for a set of constraints for tenant service agreement:
-Tenant 1 has a massive amount IoT sensors sending data periodically so they get a better price for the greater amount. (payment group 1)
+Tenant 1 has a massive amount IoT sensors sending data periodically so they get a better price for the greater amount and have a higher priority. (payment group 1)
+Tenant 1 wants to store all of the given data and the processed aggregate data, which leads to them requiring a lot more resources.
 ### tenant1_schema_constraints:
 ```json
 {
@@ -22,7 +23,8 @@ Tenant 1 has a massive amount IoT sensors sending data periodically so they get 
 }
 ```
 
-Tenant 2 sends less IoT sensor data inconsistently so they have more restrictions and more expensive service costs. (payment group 2)
+Tenant 2 sends less IoT sensor data inconsistently so they have more restrictions and more expensive service costs and has lower priority than tenant 1. (payment group 2)
+Tenant 2 wants to store only the aggregate data processed from the raw data which takes up less resources but generates less revenue.
 ### tenant2_schema_constraints:
 ```json
 {
@@ -51,6 +53,7 @@ Tenant 2 sends less IoT sensor data inconsistently so they have more restriction
 
 ## 3. mysimbdp-batchingestmanager bounded:
 - Tenant registry (either api paths in the database OR a configuration file within the program OR "tenant_id" in service-agreement.json)
+    - Retrieved from database in mysimbdp-coredms tenant/agreements where the service agreements for the tenants are with the tenant id:s.
 - Scheduler (Per tentant to schedule: Round-robin, Priority-based or Resource aware scheduling)
 - Executor (Execute ingestion pipeline for chosen tenants data)
 

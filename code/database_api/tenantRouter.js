@@ -32,13 +32,12 @@ tenantRouter.get('/agreements', async (request, response) => {
 tenantRouter.post('/:tenantId/', async (request, response) => {
   const body = request.body
 
+  // Construct freeform_data by excluding tenantId
+  const { tenantId: _, ...freeform_data } = body;
+
   const tenant = new Tenant({
-    id: body.id,
-    sampling_rate: body.sampling_rate,
-    timestamp: body.timestamp,
-    location: body.location,
-    sensor: body.sensor,
-    sensorTenantvalues: body.sensorTenantvalues
+    tenantId: body.tenantId,
+    freeform_data: freeform_data
   });
 
   const savedTenant = await tenant.save()
