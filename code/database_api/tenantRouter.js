@@ -15,7 +15,10 @@ tenantRouter.get('/:tenantId', async (request, response) => {
 // Changed so it gets the document property tenantId, instead of datatbase document _id
 tenantRouter.get('/:tenantId/:id', async (request, response) => {
   // const Tenant = await Tenant.findById(request.params.id)
-  const tenant = await Tenant.findOne({ id: request.params.id });
+  const tenant = await Tenant.findOne({
+    tenantId: request.params.tenantId, 
+    'freeform_data.id': request.params.id 
+  });
   if (tenant) {
     response.json(tenant.toJSON())
   } else {

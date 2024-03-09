@@ -12,7 +12,7 @@ const ingestData = async (tenantId, data) => {
     const consumer = await consume(`${tenantId}-topic`, `${tenantId}-group`);
 
     // Wait for data to be ingested into MongoDB
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     await consumer.disconnect();
 }

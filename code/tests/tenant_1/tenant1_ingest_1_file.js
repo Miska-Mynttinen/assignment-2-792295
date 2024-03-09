@@ -9,13 +9,13 @@ async function runTest() {
         sampling_rate: null,
         timestamp: '2024-02-12 18:04:02',
         location: {
-        id: '72428',
-        latitude: '41.978',
-        longitude: '21.464',
-        altitude: '241.2',
-        country: 'MK',
-        exact_location: '0',
-        indoor: '0'
+            id: '72428',
+            latitude: '41.978',
+            longitude: '21.464',
+            altitude: '241.2',
+            country: 'MK',
+            exact_location: '0',
+            indoor: '0'
         },
         sensor: {
             id: '82705',
@@ -34,38 +34,20 @@ async function runTest() {
 
     // inputDirectory.putFilesIntoInputDirectory(testData, '1');
 
-    console.log('here1')
-    await ingestData('1', testData);
-    console.log('here2')
-
-    // Wait for data to be ingested into MongoDB
-    await new Promise(resolve => setTimeout(resolve, 20000));
-
-    console.log('here3')
     testData.tenantId = '1'
+    await ingestData('1', testData);
 
-    console.log('here4')
-    // Stuck here in getOne after setting tenant Schema strict false
     const result = await getOne(testData);
     if (!result) {
-        console.log('here5')
         throw new Error('Data not found in MongoDB');
     }
-    console.log('here6')
     
-    console.log('testData', testData);
-    console.log('JSON.stringify(result)', JSON.stringify(result));
-
-    console.log('here7')
     // Compare ingested data with test data
     if (!(deepEqual(JSON.parse(JSON.stringify(result)), testData))) {
-        console.log('here8')
         throw new Error('Ingested data does not match test data');
     } else {
         console.log('test: tenant1_ingest_1_file.js PASSED');
     }
-
-    console.log('here9')
 };
 
 function deepEqual(object1, object2) {
