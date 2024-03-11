@@ -1,5 +1,5 @@
 const { clientbatchingest } = require('./clientbatchingestapp.js')
-const { getAgreements } = require('./database_api/tenantService.js');
+const { getAgreements } = require('./database_api/agreementService.js');
 
 class MySimBDPBatchIngestManager {
     constructor() {

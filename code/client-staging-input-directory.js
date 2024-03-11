@@ -17,7 +17,7 @@ class ClientStagingInputDirectory {
     giveDataToTenant = (tenantId, dataId) => {
         const filesToGive = this.files.filter((files) => (files[1] === tenantId) && (files[2] === dataId))
         this.files.filter((files) => (files[1] !== tenantId) && (files[2] !== dataId))
-        return filesToGive
+        return filesToGive.map(([insertedFiles]) => [insertedFiles]);
     }
 
     generateRandomStringId = () => {

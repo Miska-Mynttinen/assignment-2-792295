@@ -9,7 +9,9 @@ const ingestData = async (tenantId, data) => {
     let createResults;
     try {
         // Produce data to Kafka topic
-        await produce(`${tenantId}-topic`, [{ value: JSON.stringify(data) }]);
+        // await produce(`${tenantId}-topic`, [{ value: JSON.stringify(data) }]);
+        const messages = data.map(message => ({ value: JSON.stringify(message) }));
+        await produce(`${tenantId}-topic`, messages);
 
         // Consume data from Kafka topic
         const consumerObj = await consume(`${tenantId}-topic`, `${tenantId}-group`);
@@ -28,7 +30,6 @@ const ingestData = async (tenantId, data) => {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             await consumer.disconnect();
-            return createResults;
         }
     }
 }

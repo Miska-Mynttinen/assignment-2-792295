@@ -13,18 +13,8 @@ const getOne = async fileData => {
     return request.then(response => response.data)
 }
 
-const getAgreements = () => {
-    const response = axios.get(`${baseUrl}/agreements`)
-    return response.data
-}
-
 const create = async newObject => {
     const response = await axios.post(`${baseUrl}/${newObject.tenantId}`, newObject)
-    return response.data
-}
-
-const createAgreement = async newObject => {
-    const response = await axios.post(`${baseUrl}/agreements`, newObject)
     return response.data
 }
   
@@ -43,4 +33,4 @@ const getTestSourceData = () => {
     return request.then(response => response.data)
 }
 
-module.exports = { getAll, getOne, getAgreements, create, createAgreement, update, remove, getTestSourceData }
+module.exports = { getAll, getOne, create, update, remove, getTestSourceData }

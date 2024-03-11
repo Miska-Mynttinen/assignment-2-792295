@@ -1,7 +1,5 @@
-require('axios');
-//const { inputDirectory } = require('../../index.js')
+const { inputDirectory } = require('../../index.js')
 const { getOne } = require('../../database_api/tenantService.js');
-const { ingestData } = require('../../mysimbdp-daas.js');
 
 async function runTest() {
     const testData = {
@@ -32,18 +30,20 @@ async function runTest() {
         ]
     };
 
-    // inputDirectory.putFilesIntoInputDirectory(testData, '1');
+    inputDirectory.putFilesIntoInputDirectory(testData, '1');
 
-    testData.tenantId = '1'
-    await ingestData('1', testData);
+    const modifiedTestData = { ...testData, tenantId: '1' };
 
-    const result = await getOne(testData);
+    // Whole notifying and ingestion takes a lot of time for data to be accessible (1 minute).
+    await new Promise(resolve => setTimeout(resolve, 60000));
+
+    const result = await getOne(modifiedTestData);
     if (!result) {
         throw new Error('Data not found in MongoDB');
     }
     
     // Compare ingested data with test data
-    if (!(deepEqual(JSON.parse(JSON.stringify(result)), testData))) {
+    if (!(deepEqual(JSON.parse(JSON.stringify(result)), modifiedTestData))) {
         throw new Error('Ingested data does not match test data');
     } else {
         console.log('test: tenant1_ingest_1_file.js PASSED');

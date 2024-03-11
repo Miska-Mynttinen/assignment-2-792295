@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const { ingestData } = require('./mysimbdp-daas.js')
 
 const readFiles = (tenantId, dataId, inputDirectory) => {
@@ -11,19 +9,15 @@ const readFiles = (tenantId, dataId, inputDirectory) => {
 
 const wrangleData = (tenantId, data) => {
     // Add tenant id to all files in data
-    data.forEach(file => {
-        file.tenantId = tenantId;
+    const wrangledData = (data[0] ?? data).map(file => {
+        // Create a new object with tenantId added
+        return { ...file, tenantId: tenantId };
     });
 
-    return data;
+    return wrangledData;
 }
 
-const ingestTenantData = (tenantId, data) => {
-    // Ingest data into mysimbdp-coredms through mysimbdp-daas API
-    ingestData(tenantId, data);
-}
-
-const testIngestionPerformance = (tenantId, data, constraints) => {
+/*const testIngestionPerformance = (tenantId, data, constraints) => {
     const startTime = Date.now() * 1000; // in seconds
     
     // Ingest the data
@@ -39,21 +33,14 @@ const testIngestionPerformance = (tenantId, data, constraints) => {
         .catch(error => {
         console.error(`Ingestion failed for tenant ${tenantId}: ${error.message}`);
         });
-}
+}*/
 
 
 const clientbatchingest = (tenantId, dataId, inputDirectory) => {
     const data = readFiles(tenantId, dataId, inputDirectory);
     const wrangledData = wrangleData(tenantId, data);
+    // Ingest data into mysimbdp-coredms through mysimbdp-daas API
     ingestData(tenantId, wrangledData);
 }
 
 module.exports = { clientbatchingest };
-
-// Usage
-/*const app = new ClientBatchIngestApp('/path/to/client-staging-input-directory');
-app.run();
-
-const tenant1Data = /* ...
-const tenant1Constraints = /* ...
-*/

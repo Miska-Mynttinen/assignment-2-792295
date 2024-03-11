@@ -5,12 +5,12 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http')
 const dataRouter = require('./assignment_1_code_used/dataRouter.js');
+const agreementRouter = require('./database_api/agreementRouter.js');
 const tenantRouter = require('./database_api/tenantRouter.js');
-const { createAgreement } = require('./database_api/tenantService.js');
+const { createAgreement } = require('./database_api/agreementService.js');
 require('express-async-errors');
 require('dotenv').config();
 const serviceAgreements = require('./service_contracts.json');
-//const Initializer = require('./initializeInstances.js');
 const MySimBDPBatchIngestManager = require('./batchingestmanager.js');
 const ClientStagingInputDirectory = require('./client-staging-input-directory.js');
 
@@ -39,6 +39,7 @@ if (require.main === module) {
 
   // Route
   mysimbdp.use('/data', dataRouter);
+  mysimbdp.use('/agreement', agreementRouter);
   mysimbdp.use('/tenant', tenantRouter);
 
   const server = http.createServer(mysimbdp)
