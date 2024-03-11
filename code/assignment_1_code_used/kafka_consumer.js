@@ -16,13 +16,15 @@ const kafka = new Kafka({
 
 const consume = async (topic, groupId) => {
     const consumer = kafka.consumer({ groupId: groupId });
+    const createPromises = [];
     try {
         await consumer.connect();
         await consumer.subscribe({ topic: topic, fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
                 const data = JSON.parse(message.value.toString())
-                await create(data);
+                const createResult = create(data);
+                createPromises.push(createResult);
             },
         });
     } catch (error) {
@@ -30,7 +32,7 @@ const consume = async (topic, groupId) => {
     }
 
     // Return consumer in order to disconnect with consumer.disconnect()
-    return consumer;
+    return [consumer, createPromises];
 };
 
 module.exports = consume;
