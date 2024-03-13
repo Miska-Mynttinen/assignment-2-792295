@@ -1,12 +1,10 @@
 const { clientbatchingest } = require('./clientbatchingestapp.js')
-const { getAgreements } = require('./database_api/agreementService.js');
 
 class MySimBDPBatchIngestManager {
     constructor() {
         this._inputDirectory = null;
         this.scheduleArray = [];
         this.scheduleJobsRunning = false;
-        this.tenantAgreements = getAgreements();
     }
 
     set inputDirectory(inputDirectory) {

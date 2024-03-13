@@ -3,6 +3,9 @@
 # Part 1
 
 ## 1. Schemas for a set of constraints for tenant service agreement:
+Platform only supports document-based data given as JSON due to that being the simplest and best way to store the data into mongoDB. IoT data from tenants supports the document-based model in a sensible way. Also this type of data is easy to update and analyze consistently.
+Both tenants have to pay for uploading and maintaining data in mysimbdp-coredms (mongoDB).
+
 Tenant 1 has a massive amount IoT sensors sending data periodically so they get a better price for the greater amount and have a higher priority. (payment group 1)
 Tenant 1 wants to store all of the given data and the processed aggregate data, which leads to them requiring a lot more resources.
 ### tenant1_schema_constraints:
@@ -17,7 +20,8 @@ Tenant 1 wants to store all of the given data and the processed aggregate data, 
     },
     "service_agreement_constraints": {
         "agreement_duration_months": 12,
-        "cost_per_MB_in_euro": 0.01,
+        "cost_per_upload_MB_in_euro": 0.01,
+        "cost_per_maintenance_MB_per_month_in_euro": 0.005,
         "service_availability_in_percent": 99
     }
 }
@@ -37,7 +41,8 @@ Tenant 2 wants to store only the aggregate data processed from the raw data whic
     },
     "service_agreement_constraints": {
         "agreement_duration_months": 6,
-        "cost_per_MB_in_euro": 0.02,
+        "cost_per_upload_MB_in_euro": 0.02,
+        "cost_per_maintenance_MB_per_month_in_euro": 0.01,
         "service_availability_in_percent": 95
     }
 }
@@ -48,18 +53,22 @@ Tenant 2 wants to store only the aggregate data processed from the raw data whic
 - read_input_files: read input files in client-staging-input-directory
 - data_wrangler: add a new properties "client_id" and "client_name"
 - ingestion: start ingesting to mysimbd-coredms by informing mysimbdp-batchingestmanager about the data to be sent.
-- Data used for testing: null
+- processing: send data to be processed by batchprocessor of mysimbdp so aggregate data can also be stored.
+
+- Receives call from batchingestmanager to request data from client-staging-input-directory.
+- For tenant 1 only: Requests data from client-staging-input-directory and then sends data to mysimbdp-daas to be ingested to mysimbdp-coredms (mongoDB).
+- For both tenants: Requests data from client-staging-input-directory and then sends data to mysimbdp-daas to be processed by batchprocessor to create aggregatedata from the data and then the aggregate data is ingested into mysimbdp-coredms (mongoDB).
 
 
 ## 3. mysimbdp-batchingestmanager bounded:
-- Tenant registry (either api paths in the database OR a configuration file within the program OR "tenant_id" in service-agreement.json)
-    - Retrieved from database in mysimbdp-coredms tenant/agreements where the service agreements for the tenants are with the tenant id:s.
-- Scheduler (Per tentant to schedule: Round-robin, Priority-based or Resource aware scheduling)
-- Executor (Execute ingestion pipeline for chosen tenants data)
+- Tenant registry (API path /agreements in the database originally uploaded from a configuration file within the program in service_contracts.json)
+    - Retrieved from database in mysimbdp-coredms tenant/agreements where the service agreements for the tenants are identified with the tenant id:s.
+- Scheduler: scheduleJobs (Scheduling of different tenants clientbatchingestapp:s is done based on the tenants service agreements payment group with 1 being the highest priority)
+- Executor: callClientIngestionApp (Execute ingestion pipeline for chosen tenants data)
 
 - Uses Apache Kafka: The cluster of brokers and api to create producers and consumers in mysimbdp developed in assignment one.
 - Tenants can can send their data to be ingested and the mysimbdp-batchingestmanager schedules the ingestion jobs and calls mysimbdp-daas ingestion api.
-- Data sent as large batches at specific times somehow.
+- Data sent as large batches.
 - Mysimbdp-daas creates the producers and consumers based on the mysimbdp-batchingestmanager scheduling in order to ingest data into mysimbdp-coredms (MongoDB).
 - (Maybe batchProcessor with Spark or Hadoop after Kafka brokers to ingest processed data to into mysimbdp-coredms (MongoDB).)
 
@@ -67,22 +76,26 @@ Tenant 2 wants to store only the aggregate data processed from the raw data whic
 
 
 ## 4. Multi-tenancy model in mysimbdp:
-The client first puts files to the input-directory withing the core application of the platform and the input directory calls the manager and the manager calls the clients ingestion app that calls the input-directory for the files
+The client first puts files to the input-directory withing the core application of the platform and the input directory calls the manager and the manager calls the clients ingestion app that calls the input-directory for the files.
+
+Client-staging-input-directory check the tenants service agreement and checks if files inserted by the tenant follow the agreement. If yes the process is continue. If not the process is stopped.
 
 #### Shared:
 - Mysimbdp-coredms shared between all tenants.
 - Mysimbdp-batchingestmanager is used to manage all tenants mysimbdp-clientbatchingestingapp.
+- Client-staging-input-directory is shared and data is differentiated to their own sections by the tenant id. A part of mysimbdp.
 #### Individual:
-- Tenants will have individual staging input directories defined in mysimbdp-clientbatchingestapp.
-- Tenants will have individual nodes in the database for their data.
-- Tenants will have individual kafka producers and consumers that are created when they send data to be ingested and the mysimbdp-batchingestmanager calls the api mysimbdp-daas.
-- Tenants have individual service agreement contracts that define schemas for the client data.
+- Tenants will have individual nodes in the database for their data. Stored in /tenant/{tenantId}.
+- Tenants will have individual kafka producers and consumers that are created when they send data to be ingested and aggregated by calling mysimbdp-daas.
+- Tenants have individual service agreement contracts that define schemas for the client data. Stored in /agreements.
+- Tenants pay when storing data to and maintaining data in mysimbdp-coredms based on their specific service agreement.
+- When a tenant no longer wants to use the service and pay the data maintenance fees their data will be deleted from mysimbdp-coredms in their specific node. Path /tenant/{tenantId}.
 
 Performance for ingestion tests for both tenants individually and together (with failures).
-With different constraints.
+Tenants have different constraints.
 Show example of data not being ingested due to violation of constraints in the service agreement.
 Maximum amount of data per second in tests (Max system load capacity).
-Should have excellent data processing speeds, efficient scaling, high fault tolerance, and minimal disruptions. 
+Should have excellent data processing speeds, efficient scaling, high fault tolerance, and minimal disruptions.
 
 ##### Test performance for:
 - Data ingestion and Throughout (how fast and how much data can be stored per second and more)

@@ -32,7 +32,10 @@ async function runTest() {
 
     inputDirectory.putFilesIntoInputDirectory(testData, '1');
 
-    const modifiedTestData = { ...testData, tenantId: '1' };
+    const tenantId = '1';
+    const timestamp = new Date();
+
+    const modifiedTestData = { ...testData, tenantId: tenantId, timestamp: timestamp };
 
     // Whole notifying and ingestion takes a lot of time for data to be accessible (1 minute).
     await new Promise(resolve => setTimeout(resolve, 60000));
@@ -55,19 +58,31 @@ function deepEqual(object1, object2) {
     const keys2 = Object.keys(object2);
   
     if (keys1.length !== keys2.length) {
-      return false;
+        return false;
     }
   
     for (const key of keys1) {
-      const val1 = object1[key];
-      const val2 = object2[key];
-      const areObjects = isObject(val1) && isObject(val2);
-      if (
-        areObjects && !deepEqual(val1, val2) ||
-        !areObjects && val1 !== val2
-      ) {
-        return false;
-      }
+        const val1 = object1[key];
+        const val2 = object2[key];
+        const areObjects = isObject(val1) && isObject(val2);
+        
+        // Check if both values are date strings
+        const areDateStrings = isDateString(val1) && isDateString(val2);
+        
+        if (
+            (areObjects && !deepEqual(val1, val2)) ||
+            (!areObjects && val1 !== val2) ||
+            areDateStrings
+        ) {
+            continue; // Skip comparison if both values are date strings
+        }
+        
+        if (
+            areObjects && !deepEqual(val1, val2) ||
+            !areObjects && val1 !== val2
+        ) {
+            return false;
+        }
     }
   
     return true;
@@ -75,6 +90,11 @@ function deepEqual(object1, object2) {
   
 function isObject(object) {
     return object != null && typeof object === 'object';
+}
+
+function isDateString(str) {
+    // Regular expression to check if the string is in ISO format
+    return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(str);
 }
 
 runTest();

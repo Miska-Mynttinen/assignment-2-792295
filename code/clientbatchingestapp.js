@@ -8,10 +8,10 @@ const readFiles = (tenantId, dataId, inputDirectory) => {
 }
 
 const wrangleData = (tenantId, data) => {
-    // Add tenant id to all files in data
+    // Add tenantId and timestamp to all files in data
     const wrangledData = (data[0] ?? data).map(file => {
         // Create a new object with tenantId added
-        return { ...file, tenantId: tenantId };
+        return { ...file, tenantId: tenantId, timestamp: new Date() };
     });
 
     return wrangledData;
@@ -40,7 +40,11 @@ const clientbatchingest = (tenantId, dataId, inputDirectory) => {
     const data = readFiles(tenantId, dataId, inputDirectory);
     const wrangledData = wrangleData(tenantId, data);
     // Ingest data into mysimbdp-coredms through mysimbdp-daas API
-    ingestData(tenantId, wrangledData);
+    if (tenantId === '1') {
+        ingestData(tenantId, wrangledData); /* Only tenant 1 wants to store the raw data next to the processed and aggregated data. */
+    }
+    /* Process, aggregate and ingest processed data with Spark for tenants 1 and 2. */
+    // processData(tenantId, wrangledData)
 }
 
 module.exports = { clientbatchingest };

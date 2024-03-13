@@ -5,7 +5,7 @@
         "data_file_constraints": {
             "file_format": "JSON",
             "max_num_of_files": 10,
-            "max_file_size": "10MB"
+            "max_file_size_megabytes": 10
         },
         "service_agreement_constraints": {
             "agreement_duration_months": 12,
@@ -19,7 +19,7 @@
         "data_file_constraints": {
             "file_format": "JSON",
             "max_num_of_files": 5,
-            "max_file_size": "5MB"
+            "max_file_size_megabytes": 5
         },
         "service_agreement_constraints": {
             "agreement_duration_months": 6,
