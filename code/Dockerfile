@@ -1,5 +1,4 @@
 # Created in assignment 1
-
 # Node js image
 FROM node:latest
 
@@ -10,7 +9,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 RUN npm install
 
-# Bundle app souce
+# Bundle app source
 COPY . .
 
 CMD [ "npm", "start" ]

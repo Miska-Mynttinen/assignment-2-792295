@@ -157,6 +157,18 @@ services:
       - ME_CONFIG_MONGODB_ENABLE_ADMIN=true
       - ME_CONFIG_MONGODB_ADMINUSERNAME=root
       - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+
+
+  # ASSIGNMENT 2:
+  spark:
+    container_name: spark
+    image: bitnami/spark:latest
+    ports:
+      - "8082:8082"  # Spark UI port
+      - "7077:7077"  # Spark Master port
+    networks:
+      - mysimbdp-network
+    restart: always
       
 
 volumes:

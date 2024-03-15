@@ -7,6 +7,7 @@ const http = require('http')
 const dataRouter = require('./assignment_1_code_used/dataRouter.js');
 const agreementRouter = require('./database_api/agreementRouter.js');
 const tenantRouter = require('./database_api/tenantRouter.js');
+const logRouter = require('./database_api/logRouter.js');
 const { createAgreement } = require('./database_api/agreementService.js');
 require('express-async-errors');
 require('dotenv').config();
@@ -41,6 +42,7 @@ if (require.main === module) {
   mysimbdp.use('/data', dataRouter);
   mysimbdp.use('/agreement', agreementRouter);
   mysimbdp.use('/tenant', tenantRouter);
+  mysimbdp.use('/log', logRouter);
 
   const server = http.createServer(mysimbdp)
 

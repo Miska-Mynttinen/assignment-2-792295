@@ -6,7 +6,7 @@ const agreementSchema = new mongoose.Schema({
     data_file_constraints: {
       file_format: String,
       max_num_of_files: String,
-      max_file_size: String
+      max_file_size_megabytes: String
     },
     service_agreement_constraints: {
       agreement_duration_months: String,

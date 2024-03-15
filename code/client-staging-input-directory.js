@@ -1,4 +1,5 @@
 const { getAgreements } = require('./database_api/agreementService');
+const { createLog } = require('./logger.js')
 
 class ClientStagingInputDirectory {
     constructor(MySimBDPBatchIngestManager) {
@@ -9,8 +10,18 @@ class ClientStagingInputDirectory {
     putFilesIntoInputDirectory = async (insertedFiles, tenantId) => {
         /* Check fails if the tenant agreement is not followed. Most optimal place to stop before using computing resources. */
         const tenantAgreements = await getAgreements();
-        if (insertedFiles.length > tenantAgreements[tenantId].max_num_of_files) {
-            throw new Error(`Too many files inserted at once. Allowed maximum: ${tenantAgreements[tenantId].max_num_of_files}`);
+        const tenantsData = tenantAgreements.find(item => item.tenantId === tenantId);
+
+        if (insertedFiles.length > tenantsData.data_file_constraints.max_num_of_files) {
+            console.log(`Too many files inserted at once. Allowed maximum: ${tenantsData.data_file_constraints.max_num_of_files}`);
+            let metrics = {};
+            metrics.dataSizeBytes = Buffer.byteLength(JSON.stringify(insertedFiles));
+            metrics.ingestionStartTime = new Date;
+            metrics.ingestionEndTime = new Date;
+            metrics.ingestionResult = `fail: Too many files inserted at once. Allowed maximum: ${tenantsData.data_file_constraints.max_num_of_files}`;
+            metrics.timestamp = new Date;
+            await createLog(tenantId, metrics);
+            return `Too many files inserted at once. Allowed maximum: ${tenantsData.data_file_constraints.max_num_of_files}`
         }
 
         /* Check if file size in megabytes is larger then maximum allowed size. */
@@ -18,14 +29,30 @@ class ClientStagingInputDirectory {
         if (typeof insertedFiles[Symbol.iterator] === 'function') {
             // insertedFiles is iterable
             for(const file of insertedFiles) {
-                if ((Buffer.byteLength(JSON.stringify(file)) / (1024*1024)).toFixed(2) > tenantAgreements[tenantId].max_file_size_megabytes) {
-                    throw new Error(`A given file is too large. Allowed maximum size in MB is ${tenantAgreements[tenantId].max_file_size_megabytes}`);
+                if ((Buffer.byteLength(JSON.stringify(file)) / (1024*1024)).toFixed(2) > tenantsData.data_file_constraints.max_file_size_megabytes) {
+                    console.log(`A given file is too large. Allowed maximum size in MB is ${tenantsData.data_file_constraints.max_file_size_megabytes}`);
+                    let metrics = {};
+                    metrics.dataSizeBytes = Buffer.byteLength(JSON.stringify(file));
+                    metrics.ingestionStartTime = new Date;
+                    metrics.ingestionEndTime = new Date;
+                    metrics.ingestionResult = `fail: Too many files inserted at once. Allowed maximum: ${tenantsData.data_file_constraints.max_file_size_megabytes}`;
+                    metrics.timestamp = new Date;
+                    await createLog(tenantId, metrics);
+                    return `A given file is too large. Allowed maximum size in MB is ${tenantsData.data_file_constraints.max_file_size_megabytes}`
                 }
             }
         } else {
             //insertedFiles is not iterable
-            if ((Buffer.byteLength(JSON.stringify(insertedFiles)) / (1024*1024)).toFixed(2) > tenantAgreements[tenantId].max_file_size_megabytes) {
-                throw new Error(`A given file is too large. Allowed maximum size in MB is ${tenantAgreements[tenantId].max_file_size_megabytes}`);
+            if ((Buffer.byteLength(JSON.stringify(insertedFiles)) / (1024*1024)).toFixed(2) > tenantsData.data_file_constraints.max_file_size_megabytes) {
+                console.log(`A given file is too large. Allowed maximum size in MB is ${tenantsData.data_file_constraints.max_file_size_megabytes}`);
+                let metrics = {};
+                metrics.dataSizeBytes = Buffer.byteLength(JSON.stringify(insertedFiles));
+                metrics.ingestionStartTime = new Date;
+                metrics.ingestionEndTime = new Date;
+                metrics.ingestionResult = `fail: Too many files inserted at once. Allowed maximum: ${tenantsData.data_file_constraints.max_file_size_megabytes}`;
+                metrics.timestamp = new Date;
+                await createLog(tenantId, metrics);
+                return `A given file is too large. Allowed maximum size in MB is ${tenantsData.data_file_constraints.max_file_size_megabytes}`
             }
         }
 

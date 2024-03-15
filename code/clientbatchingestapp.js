@@ -1,4 +1,4 @@
-const { ingestData } = require('./mysimbdp-daas.js')
+const { ingestData, batchProcess } = require('./mysimbdp-daas.js')
 
 const readFiles = (tenantId, dataId, inputDirectory) => {
     // Read data from JSON file as an example
@@ -44,7 +44,7 @@ const clientbatchingest = (tenantId, dataId, inputDirectory) => {
         ingestData(tenantId, wrangledData); /* Only tenant 1 wants to store the raw data next to the processed and aggregated data. */
     }
     /* Process, aggregate and ingest processed data with Spark for tenants 1 and 2. */
-    // processData(tenantId, wrangledData)
+    batchProcess(tenantId, wrangledData);
 }
 
 module.exports = { clientbatchingest };

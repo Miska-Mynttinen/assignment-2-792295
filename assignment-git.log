@@ -1,1 +1,63 @@
-Git log
+commit f3a3f6aa86b49e93695bcd0e8786dd1892e0eb24 (HEAD -> main, origin/main)
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Thu Mar 14 01:24:01 2024 +0200
+
+    Test created for part 1 and report and designs fully planned nad components almost done
+
+commit 11d867dc8b1acee0c78d55ccae7962ecc125ebda
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Mon Mar 11 23:48:42 2024 +0200
+
+    Added /agreements route, fixed function calls between client-staging-input-directory, batchingestmanager and clientbatchingestapp. Also fixed testing for one file for the whole system
+
+commit bc04cb4f713822d5389ebda7e50b152b03838138
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Mon Mar 11 19:43:17 2024 +0200
+
+    Fixed ingestion with kafka consumer and mysimbdp-daas and a test
+
+commit b32192cbe564b04a459b2abad492b9150b23239b
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+:
+commit f3a3f6aa86b49e93695bcd0e8786dd1892e0eb24 (HEAD -> main, origin/main)
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Thu Mar 14 01:24:01 2024 +0200
+
+    Test created for part 1 and report and designs fully planned nad components almost done
+
+commit 11d867dc8b1acee0c78d55ccae7962ecc125ebda
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Mon Mar 11 23:48:42 2024 +0200
+
+    Added /agreements route, fixed function calls between client-staging-input-directory, batchingestmanager and clientbatchingestapp. Also fixed testing for one file for the whole system
+
+commit bc04cb4f713822d5389ebda7e50b152b03838138
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Mon Mar 11 19:43:17 2024 +0200
+
+    Fixed ingestion with kafka consumer and mysimbdp-daas and a test
+
+commit b32192cbe564b04a459b2abad492b9150b23239b
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+:
+commit f3a3f6aa86b49e93695bcd0e8786dd1892e0eb24 (HEAD -> main, origin/main)
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Thu Mar 14 01:24:01 2024 +0200
+
+    Test created for part 1 and report and designs fully planned nad components almost done
+
+commit 11d867dc8b1acee0c78d55ccae7962ecc125ebda
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Mon Mar 11 23:48:42 2024 +0200
+
+    Added /agreements route, fixed function calls between client-staging-input-directory, batchingestmanager and clientbatchingestapp. Also fixed testing for one file for the whole system
+
+commit bc04cb4f713822d5389ebda7e50b152b03838138
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Mon Mar 11 19:43:17 2024 +0200
+
+    Fixed ingestion with kafka consumer and mysimbdp-daas and a test
+
+commit b32192cbe564b04a459b2abad492b9150b23239b
+Author: Miska-Mynttinen <miska.mynttinen@aalto.fi>
+Date:   Sat Mar 9 18:59:07 2024 +0200

@@ -25,8 +25,16 @@ async function runTest() {
             }
         },
         sensordatavalues: [
-            { id: '43583940173', value: '148.60', value_type: 'P1' },
-            { id: '43583940174', value: '68.40', value_type: 'P2' }
+            {
+                id: "44407351364",
+                value: "11.30",
+                value_type: "temperature"
+            },
+            {
+                id: "44407351366",
+                value: "99.90",
+                value_type: "humidity"
+            }
         ]
     };
 
@@ -49,7 +57,27 @@ async function runTest() {
     if (!(deepEqual(JSON.parse(JSON.stringify(result)), modifiedTestData))) {
         throw new Error('Ingested data does not match test data');
     } else {
-        console.log('test: tenant1_ingest_1_file.js PASSED');
+        console.log('test: Part 1 batch_tenant1_ingest_1_file.js PASSED');
+    }
+
+    const modifiedTestData2 = {
+        id: '11.3',
+        tenantId: '1',
+        timestamp: timestamp,
+        temperature: '11.3',
+        humidity: '99.9'
+    }
+
+    const result2 = await getOne(modifiedTestData2);
+    if (!result) {
+        throw new Error('Data not found in MongoDB');
+    }
+    
+    // Compare ingested data with processed test data
+    if (!(deepEqual(JSON.parse(JSON.stringify(result2)), modifiedTestData2))) {
+        throw new Error('Ingested data does not match test data');
+    } else {
+        console.log('test: Part 2 batch_tenant1_ingest_1_file.js PASSED');
     }
 };
 
